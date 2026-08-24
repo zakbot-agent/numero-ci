@@ -1,7 +1,7 @@
 {
   "name": "numero-ci",
-  "version": "0.2.0",
-  "description": "Ivorian phone numbers: normalisation, operator detection, and matching between the legacy 8-digit format and the current 10-digit one.",
+  "version": "0.2.1",
+  "description": "Numéros de téléphone ivoiriens : normalisation, détection de l opérateur, et rapprochement entre l ancien format à 8 chiffres et le nouveau à 10.",
   "keywords": [
     "cote-divoire",
     "ivory-coast",

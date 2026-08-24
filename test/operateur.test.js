@@ -16,15 +16,19 @@ test('distingue mobile et fixe', () => {
   assert.equal(estMobile('2557223637'), false);
 });
 
-test('tranche pour MTN sur un ancien numéro, grâce à ses préfixes publiés', () => {
-  const r = operateur('05462020');       // 05 figure dans la liste MTN
-  assert.equal(r.operateur, 'mtn');
-  assert.equal(r.source, 'ancien-prefixe-mtn');
+test('reconnaît l\'opérateur d\'un ancien numéro à 8 chiffres', () => {
+  // tranches en 0x : 01-03 Moov, 04-06 MTN, 07-09 Orange
+  assert.equal(operateur('01223344').operateur, 'moov');
+  assert.equal(operateur('05462020').operateur, 'mtn');
+  assert.equal(operateur('07223637').operateur, 'orange');
+  // tranches supplémentaires publiées par MTN
+  assert.equal(operateur('45223637').operateur, 'mtn');
+  assert.equal(operateur('96223637').operateur, 'mtn');
+  assert.equal(operateur('05462020').source, 'ancien-prefixe');
 });
 
-test('ne devine PAS l\'opérateur quand il ne peut pas le savoir', () => {
-  // 57 n'est pas dans la liste publiée par MTN, et ni Orange ni Moov ne publient
-  // les leurs : répondre « Orange » ici serait une invention
+test('ne devine PAS sur une tranche qui n\'est attribuée nulle part', () => {
+  // 57 ne figure ni dans les tranches en 0x ni dans la liste MTN
   const r = operateur('57223637');
   assert.equal(r.operateur, null);
   assert.equal(r.source, 'inconnu');
@@ -33,7 +37,7 @@ test('ne devine PAS l\'opérateur quand il ne peut pas le savoir', () => {
 
 test('dit toujours d\'où vient sa réponse', () => {
   assert.equal(operateur('0757223637').source, 'prefixe');
-  assert.equal(operateur('05462020').source, 'ancien-prefixe-mtn');
+  assert.equal(operateur('05462020').source, 'ancien-prefixe');
   assert.equal(operateur('quelque chose').source, 'inconnu');
 });
 

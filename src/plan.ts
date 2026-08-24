@@ -26,21 +26,42 @@ export const PREFIXES: Record<string, { operateur: Operateur; type: TypeLigne }>
 };
 
 /**
- * Anciens préfixes mobiles à 8 chiffres, publiés par MTN.
+ * Anciens préfixes mobiles, du temps des 8 chiffres.
  *
- * Ils servent à reconnaître l'opérateur d'un numéro écrit AVANT 2021 — un cas
- * très courant dans les bases de contacts et les carnets WhatsApp, où les deux
+ * Ils servent à reconnaître l'opérateur d'un numéro écrit AVANT 2021 — cas très
+ * courant dans les bases de contacts et les carnets WhatsApp, où les deux
  * époques cohabitent.
  *
- * Attention : seule MTN publie sa liste. Pour un ancien numéro qui n'y figure
- * pas, on ne DEVINE pas l'opérateur — on renvoie `null`. Un mauvais opérateur
- * envoie un paiement Mobile Money au mauvais endroit ; mieux vaut ne pas savoir
- * que de se tromper.
+ * Deux sources, et elles ne se contredisent pas :
+ *
+ *  · MTN publie la sienne sur sa page d'aide (04, 05, 06, puis 44, 45, 46, 54…) —
+ *    les anciens numéros ne commençaient pas tous par zéro.
+ *  · Les tranches en 0x viennent de Zakaria Koné, qui a utilisé ces numéros :
+ *    01-02-03 Moov, 04-05-06 MTN, 07-08-09 Orange. Elles recoupent exactement
+ *    la liste MTN sur 04-05-06, ce qui est un bon signe.
+ *
+ * Ni Orange ni Moov ne publient les leurs. Si vous avez une source officielle,
+ * elle est la bienvenue en issue.
  */
-export const ANCIENS_PREFIXES_MTN = [
-  '04', '05', '06', '44', '45', '46', '54', '55', '56',
-  '64', '65', '66', '74', '75', '76', '84', '85', '86', '95', '96',
-];
+export const ANCIENS_PREFIXES: Record<Operateur, string[]> = {
+  moov: ['01', '02', '03'],
+  mtn: [
+    '04', '05', '06',                                    // page MTN + terrain
+    '44', '45', '46', '54', '55', '56', '64', '65', '66', // page MTN
+    '74', '75', '76', '84', '85', '86', '95', '96',
+  ],
+  orange: ['07', '08', '09'],
+};
+
+/** Conservé pour compatibilité : la liste publiée par MTN. */
+export const ANCIENS_PREFIXES_MTN = ANCIENS_PREFIXES.mtn;
+
+/** Préfixe ancien → opérateur, construit une fois. */
+export const ANCIEN_VERS_OPERATEUR: Record<string, Operateur> = Object.fromEntries(
+  Object.entries(ANCIENS_PREFIXES).flatMap(([op, liste]) =>
+    liste.map(p => [p, op as Operateur]),
+  ),
+);
 
 /** Longueur d'un numéro national depuis 2021. */
 export const LONGUEUR_NOUVEAU = 10;

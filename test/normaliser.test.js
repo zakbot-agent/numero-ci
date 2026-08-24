@@ -72,3 +72,16 @@ test('estValide et chiffres', () => {
   assert.equal(estValide('99 99'), false);
   assert.equal(chiffres('+225 (07) 57-22.36 37'), '2250757223637');
 });
+
+test('un ancien numéro se convertit seul quand sa tranche est connue', () => {
+  // 07 = Orange à l'époque des 8 chiffres → préfixe 07 ajouté devant
+  assert.equal(analyser('07223637').national, '0707223637');
+  assert.equal(analyser('01223344').national, '0101223344');   // Moov
+  assert.equal(analyser('05462020').national, '0505462020');   // MTN
+});
+
+test('une tranche non attribuée reste non convertie, et le dit', () => {
+  const r = analyser('57223637');
+  assert.equal(r.valide, false);
+  assert.match(r.raison, /57/);
+});

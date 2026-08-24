@@ -1,4 +1,4 @@
-import { INDICATIF, LONGUEUR_ANCIEN, LONGUEUR_NOUVEAU, PREFIXES } from './plan.js';
+import { ANCIEN_VERS_OPERATEUR, INDICATIF, LONGUEUR_ANCIEN, LONGUEUR_NOUVEAU, PREFIXES } from './plan.js';
 
 /**
  * Ce qu'on sait d'un numéro après analyse.
@@ -66,13 +66,18 @@ export function analyser(
 
   // ancien format : 8 chiffres, sans préfixe opérateur
   if (n.length === LONGUEUR_ANCIEN) {
+    // Les deux premiers chiffres de l ancien numéro portent l opérateur
+    // (01-03 Moov, 04-06 MTN, 07-09 Orange, plus les tranches MTN en 4x-9x).
+    // On peut donc convertir sans que l appelant ait à le préciser.
+    operateur = operateur ?? ANCIEN_VERS_OPERATEUR[n.slice(0, 2)];
     if (!operateur) {
       return {
         ...vide,
         cle: n,
         ancienFormat: true,
-        raison: "ancien format à 8 chiffres : le préfixe opérateur manque. " +
-          "Passez l'opérateur en second argument pour le convertir.",
+        raison: "ancien format à 8 chiffres, et la tranche « " + n.slice(0, 2) +
+          " » n est attribuée à aucun opérateur connu. Passez l opérateur en " +
+          "second argument pour convertir malgré tout.",
       };
     }
     const prefixe = Object.entries(PREFIXES)

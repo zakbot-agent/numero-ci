@@ -1,12 +1,12 @@
-import { ANCIEN_VERS_OPERATEUR, INDICATIF, LONGUEUR_ANCIEN, PREFIXES } from './plan.js';
-import type { Operateur, TypeLigne } from './plan.js';
-import { chiffres } from './normaliser.js';
+import { LEGACY_TO_OPERATOR, COUNTRY_CODE, LENGTH_LEGACY, PREFIXES } from './plan.js';
+import type { Operator, LineType } from './plan.js';
+import { digits } from './normaliser.js';
 
-export interface Ligne {
-  operateur: Operateur | null;
-  type: TypeLigne | null;
+export interface LineInfo {
+  operator: Operator | null;
+  type: LineType | null;
   /** comment l'opérateur a été déterminé — utile pour décider si on s'y fie */
-  source: 'prefixe' | 'ancien-prefixe' | 'inconnu';
+  source: 'prefix' | 'legacy-prefix' | 'unknown';
 }
 
 /**
@@ -24,32 +24,32 @@ export interface Ligne {
  * un SMS par la mauvaise passerelle. Une réponse « je ne sais pas » se traite ;
  * une réponse fausse, non.
  */
-export function operateur(entree: unknown): Ligne {
-  let n = chiffres(entree);
+export function operator(input: unknown): LineInfo {
+  let n = digits(input);
   if (n.startsWith('00')) n = n.slice(2);
-  if (n.startsWith(INDICATIF)) n = n.slice(INDICATIF.length);
+  if (n.startsWith(COUNTRY_CODE)) n = n.slice(COUNTRY_CODE.length);
 
   if (n.length === 10) {
     const p = PREFIXES[n.slice(0, 2)];
-    if (p) return { operateur: p.operateur, type: p.type, source: 'prefixe' };
-    return { operateur: null, type: null, source: 'inconnu' };
+    if (p) return { operator: p.operator, type: p.type, source: 'prefix' };
+    return { operator: null, type: null, source: 'unknown' };
   }
 
-  if (n.length === LONGUEUR_ANCIEN) {
-    const op = ANCIEN_VERS_OPERATEUR[n.slice(0, 2)];
-    if (op) return { operateur: op, type: 'mobile', source: 'ancien-prefixe' };
+  if (n.length === LENGTH_LEGACY) {
+    const op = LEGACY_TO_OPERATOR[n.slice(0, 2)];
+    if (op) return { operator: op, type: 'mobile', source: 'legacy-prefix' };
     // tranche inconnue : on ne devine pas.
-    return { operateur: null, type: null, source: 'inconnu' };
+    return { operator: null, type: null, source: 'unknown' };
   }
 
-  return { operateur: null, type: null, source: 'inconnu' };
+  return { operator: null, type: null, source: 'unknown' };
 }
 
 /** Raccourci quand seul l'opérateur compte. */
-export const nomOperateur = (entree: unknown): Operateur | null => operateur(entree).operateur;
+export const operatorName = (input: unknown): Operator | null => operator(input).operator;
 
 /** Le numéro est-il une ligne mobile ? `null` si on ne peut pas le dire. */
-export function estMobile(entree: unknown): boolean | null {
-  const l = operateur(entree);
+export function isMobile(input: unknown): boolean | null {
+  const l = operator(input);
   return l.type === null ? null : l.type === 'mobile';
 }

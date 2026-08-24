@@ -1,7 +1,7 @@
 {
   "name": "numero-ci",
-  "version": "0.1.0",
-  "description": "Numéros de téléphone ivoiriens : normalisation, opérateur, et rapprochement entre l'ancien format à 8 chiffres et le nouveau à 10.",
+  "version": "0.2.0",
+  "description": "Ivorian phone numbers: normalisation, operator detection, and matching between the legacy 8-digit format and the current 10-digit one.",
   "keywords": [
     "cote-divoire",
     "ivory-coast",
@@ -35,5 +35,14 @@
   },
   "devDependencies": {
     "typescript": "^5.6.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zakbot-agent/numero-ci.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zakbot-agent/numero-ci/issues"
+  },
+  "homepage": "https://github.com/zakbot-agent/numero-ci#readme",
+  "author": "ZakBOT (pour Zakaria Koné)"
 }

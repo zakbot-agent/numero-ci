@@ -10,19 +10,19 @@
  *  · Orange https://www.orange.ci/fr/plan-national-de-numerotation-a-10-chiffres.html
  */
 
-export type Operateur = 'orange' | 'mtn' | 'moov';
-export type TypeLigne = 'mobile' | 'fixe';
+export type Operator = 'orange' | 'mtn' | 'moov';
+export type LineType = 'mobile' | 'landline';
 
-export const INDICATIF = '225';
+export const COUNTRY_CODE = '225';
 
 /** Préfixe à deux chiffres du nouveau plan → opérateur et type de ligne. */
-export const PREFIXES: Record<string, { operateur: Operateur; type: TypeLigne }> = {
-  '01': { operateur: 'moov', type: 'mobile' },
-  '05': { operateur: 'mtn', type: 'mobile' },
-  '07': { operateur: 'orange', type: 'mobile' },
-  '21': { operateur: 'moov', type: 'fixe' },
-  '25': { operateur: 'mtn', type: 'fixe' },
-  '27': { operateur: 'orange', type: 'fixe' },
+export const PREFIXES: Record<string, { operator: Operator; type: LineType }> = {
+  '01': { operator: 'moov', type: 'mobile' },
+  '05': { operator: 'mtn', type: 'mobile' },
+  '07': { operator: 'orange', type: 'mobile' },
+  '21': { operator: 'moov', type: 'landline' },
+  '25': { operator: 'mtn', type: 'landline' },
+  '27': { operator: 'orange', type: 'landline' },
 };
 
 /**
@@ -43,7 +43,7 @@ export const PREFIXES: Record<string, { operateur: Operateur; type: TypeLigne }>
  * Ni Orange ni Moov ne publient les leurs. Si vous avez une source officielle,
  * elle est la bienvenue en issue.
  */
-export const ANCIENS_PREFIXES: Record<Operateur, string[]> = {
+export const LEGACY_PREFIXES: Record<Operator, string[]> = {
   moov: ['01', '02', '03'],
   mtn: [
     '04', '05', '06',                                    // page MTN + terrain
@@ -54,16 +54,16 @@ export const ANCIENS_PREFIXES: Record<Operateur, string[]> = {
 };
 
 /** Conservé pour compatibilité : la liste publiée par MTN. */
-export const ANCIENS_PREFIXES_MTN = ANCIENS_PREFIXES.mtn;
+export const LEGACY_PREFIXES_MTN = LEGACY_PREFIXES.mtn;
 
 /** Préfixe ancien → opérateur, construit une fois. */
-export const ANCIEN_VERS_OPERATEUR: Record<string, Operateur> = Object.fromEntries(
-  Object.entries(ANCIENS_PREFIXES).flatMap(([op, liste]) =>
-    liste.map(p => [p, op as Operateur]),
+export const LEGACY_TO_OPERATOR: Record<string, Operator> = Object.fromEntries(
+  Object.entries(LEGACY_PREFIXES).flatMap(([op, liste]) =>
+    liste.map(p => [p, op as Operator]),
   ),
 );
 
 /** Longueur d'un numéro national depuis 2021. */
-export const LONGUEUR_NOUVEAU = 10;
+export const LENGTH_CURRENT = 10;
 /** Longueur d'un numéro national avant 2021. */
-export const LONGUEUR_ANCIEN = 8;
+export const LENGTH_LEGACY = 8;

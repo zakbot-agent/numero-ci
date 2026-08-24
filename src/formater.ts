@@ -1,5 +1,5 @@
-import { analyser } from './normaliser.js';
-import type { Operateur } from './plan.js';
+import { parse } from './normaliser.js';
+import type { Operator } from './plan.js';
 
 /**
  * Formats d'affichage.
@@ -15,15 +15,15 @@ export type Format = 'national' | 'international' | 'compact' | 'wa';
  *          On ne renvoie jamais une chaîne à moitié juste : un numéro affiché
  *          de travers est composé de travers.
  */
-export function formater(
-  entree: unknown,
-  format: Format = 'national',
-  operateur?: Operateur,
+export function format(
+  input: unknown,
+  style: Format = 'national',
+  operator?: Operator,
 ): string | null {
-  const r = analyser(entree, operateur);
-  if (!r.valide || !r.national) return null;
+  const r = parse(input, operator);
+  if (!r.valid || !r.national) return null;
 
-  switch (format) {
+  switch (style) {
     case 'compact':
       return r.national;
     case 'international':
@@ -38,8 +38,8 @@ export function formater(
 }
 
 /** Lien WhatsApp direct, avec message pré-rempli optionnel. */
-export function lienWhatsApp(entree: unknown, message?: string, operateur?: Operateur): string | null {
-  const base = formater(entree, 'wa', operateur);
+export function whatsappLink(input: unknown, message?: string, operator?: Operator): string | null {
+  const base = format(input, 'wa', operator);
   if (!base) return null;
   return message ? `${base}?text=${encodeURIComponent(message)}` : base;
 }

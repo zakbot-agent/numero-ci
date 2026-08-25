@@ -104,12 +104,23 @@ parse('57223637');            // valid: false, la raison est expliquée
 parse('57223637', 'orange');  // '0757223637'
 ```
 
+Les **fixes** d'avant 2021 sont reconnus sans qu'on ait à préciser quoi que ce
+soit : `20`–`25` pour Abidjan, `30`–`36` pour l'intérieur. Le fixe étant alors
+le monopole de Côte d'Ivoire Télécom, devenu Orange, ils prennent tous `27`.
+
+```js
+parse('34710539').national;   // '2734710539' — un fixe de San-Pédro
+parse('22411692').national;   // '2722411692' — un fixe d'Abidjan
+isMobile('34710539');         // false
+```
+
 ## Sources
 
 Les préfixes viennent des opérateurs eux-mêmes, pas d'une mémoire :
 
 - [MTN Côte d'Ivoire — passage à 10 chiffres](https://www.mtn.ci/helppersonal/nouvelle-numerotation-en-cote-divoire-passage-a-10-chiffres/)
 - [Orange Côte d'Ivoire — plan de numérotation](https://www.orange.ci/fr/plan-national-de-numerotation-a-10-chiffres.html)
+- [ARTCI, repris par bilan.gouv.ci](https://www.bilan.gouv.ci/actualite/12099) — pour les fixes : `27` devant les anciens Orange, `25` devant les anciens MTN, `21` devant ceux de Moov
 
 MTN publie ses anciens préfixes mobiles. Les tranches en `0x` viennent de la
 connaissance du terrain (Zakaria Koné) et recoupent exactement la liste MTN sur

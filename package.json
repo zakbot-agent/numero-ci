@@ -1,6 +1,6 @@
 {
   "name": "numero-ci",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Numéros de téléphone ivoiriens : normalisation, détection de l opérateur, et rapprochement entre l ancien format à 8 chiffres et le nouveau à 10.",
   "keywords": [
     "cote-divoire",

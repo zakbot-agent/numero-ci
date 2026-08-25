@@ -8,7 +8,7 @@
  *  · it refuses to guess when it cannot know, instead of returning a plausible
  *    but wrong answer.
  */
-export { COUNTRY_CODE, PREFIXES, LEGACY_PREFIXES, LEGACY_PREFIXES_MTN, LEGACY_TO_OPERATOR, LENGTH_CURRENT, LENGTH_LEGACY } from './plan.js';
+export { COUNTRY_CODE, PREFIXES, LEGACY_PREFIXES, LEGACY_PREFIXES_MTN, LEGACY_LANDLINE_RANGES, LEGACY_TO_OPERATOR, LENGTH_CURRENT, LENGTH_LEGACY } from './plan.js';
 export type { Operator, LineType } from './plan.js';
 
 export { parse, isValid, matchKey, digits } from './normaliser.js';

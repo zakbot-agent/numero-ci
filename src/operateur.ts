@@ -1,4 +1,4 @@
-import { LEGACY_TO_OPERATOR, COUNTRY_CODE, LENGTH_LEGACY, PREFIXES } from './plan.js';
+import { LEGACY_TO_OPERATOR, LEGACY_LANDLINE_RANGES, COUNTRY_CODE, LENGTH_LEGACY, PREFIXES } from './plan.js';
 import type { Operator, LineType } from './plan.js';
 import { digits } from './normaliser.js';
 
@@ -17,7 +17,9 @@ export interface LineInfo {
  *
  * Pour un ancien numéro à 8 chiffres, l'opérateur se lit dans les deux premiers
  * chiffres : 01-02-03 Moov, 04-05-06 MTN, 07-08-09 Orange, plus les tranches en
- * 4x à 9x que MTN publie. Voir ANCIENS_PREFIXES dans plan.ts pour les sources.
+ * 4x à 9x que MTN publie. Les tranches 20-25 et 30-36 sont des FIXES : elles
+ * appartenaient toutes à Côte d'Ivoire Télécom, devenu Orange.
+ * Voir LEGACY_PREFIXES et LEGACY_LANDLINE_RANGES dans plan.ts pour les sources.
  *
  * Une tranche qui ne figure nulle part renvoie `null`, délibérément : deviner
  * ferait passer un paiement Mobile Money chez le mauvais opérateur, ou envoyer
@@ -36,6 +38,10 @@ export function operator(input: unknown): LineInfo {
   }
 
   if (n.length === LENGTH_LEGACY) {
+    // Le fixe d'avant 2021 appartenait à Côte d'Ivoire Télécom, devenu Orange.
+    if (LEGACY_LANDLINE_RANGES.includes(n.slice(0, 2))) {
+      return { operator: 'orange', type: 'landline', source: 'legacy-prefix' };
+    }
     const op = LEGACY_TO_OPERATOR[n.slice(0, 2)];
     if (op) return { operator: op, type: 'mobile', source: 'legacy-prefix' };
     // tranche inconnue : on ne devine pas.

@@ -1,4 +1,4 @@
-import { LEGACY_TO_OPERATOR, COUNTRY_CODE, LENGTH_LEGACY, LENGTH_CURRENT, PREFIXES } from './plan.js';
+import { LEGACY_TO_OPERATOR, LEGACY_LANDLINE_RANGES, COUNTRY_CODE, LENGTH_LEGACY, LENGTH_CURRENT, PREFIXES } from './plan.js';
 import type { Operator } from './plan.js';
 
 /**
@@ -70,6 +70,20 @@ export function parse(
     // Les deux premiers chiffres de l ancien numéro portent l opérateur
     // (01-03 Moov, 04-06 MTN, 07-09 Orange, plus les tranches MTN en 4x-9x).
     // On peut donc convertir sans que l appelant ait à le préciser.
+    // Un fixe d'avant 2021 (20-25 Abidjan, 30-36 intérieur) était forcément
+    // Côte d'Ivoire Télécom, devenu Orange : il prend « 27 ». On le traite avant
+    // les mobiles, car la tranche « 21 » existe des deux côtés du plan.
+    if (!operator && LEGACY_LANDLINE_RANGES.includes(n.slice(0, 2))) {
+      const nationalFixe = '27' + n;
+      return {
+        valid: true,
+        national: nationalFixe,
+        international: `+${COUNTRY_CODE}${nationalFixe}`,
+        matchKey: n,
+        legacyFormat: true,
+      };
+    }
+
     operator = operator ?? LEGACY_TO_OPERATOR[n.slice(0, 2)];
     if (!operator) {
       return {

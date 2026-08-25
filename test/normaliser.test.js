@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { parse, matchKey, isValid, digits } from '../dist/normaliser.js';
+import { isMobile, operatorName } from '../dist/operateur.js';
 
 test('accepte toutes les écritures d\'un même numéro', () => {
   const attendu = '0757223637';
@@ -84,4 +85,32 @@ test('une tranche non attribuée reste non convertie, et le dit', () => {
   const r = parse('57223637');
   assert.equal(r.valid, false);
   assert.match(r.reason, /57/);
+});
+
+// ── Fixes d'avant 2021 : ils prennent « 27 » (ex-Côte d'Ivoire Télécom) ──
+// Cas réel : l'hôtel Cannelle de San-Pédro apparaît sous les deux écritures.
+test('un fixe à 8 chiffres de San-Pédro devient un 27…', () => {
+  const r = parse('34710539');
+  assert.equal(r.valid, true);
+  assert.equal(r.national, '2734710539');
+  assert.equal(r.legacyFormat, true);
+});
+
+test('un fixe à 8 chiffres d’Abidjan devient un 27…', () => {
+  assert.equal(parse('22411692').national, '2722411692');
+});
+
+test('un fixe de Korhogo aussi', () => {
+  assert.equal(parse('+225 36864750').national, '2736864750');
+});
+
+test('un fixe ancien est reconnu comme fixe, pas comme mobile', () => {
+  assert.equal(isMobile('34710539'), false);
+  assert.equal(operatorName('34710539'), 'orange');
+});
+
+test('une tranche hors plan reste refusée plutôt que devinée', () => {
+  const r = parse('88007321');
+  assert.equal(r.valid, false);
+  assert.match(r.reason, /aucun opérateur connu/);
 });

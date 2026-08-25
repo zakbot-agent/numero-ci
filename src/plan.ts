@@ -53,6 +53,28 @@ export const LEGACY_PREFIXES: Record<Operator, string[]> = {
   orange: ['07', '08', '09'],
 };
 
+/**
+ * Anciennes tranches de numéros FIXES, du temps des 8 chiffres.
+ *
+ * Avant 2021 le fixe était le monopole de Côte d'Ivoire Télécom (devenu Orange
+ * CI) : 20 à 25 pour Abidjan, 30 à 36 pour l'intérieur. MTN et Moov n'ont
+ * obtenu leurs tranches fixes (25 et 21 du nouveau plan) qu'avec le passage à
+ * 10 chiffres. Un numéro fixe à 8 chiffres est donc forcément un ancien numéro
+ * Orange, et prend le préfixe 27.
+ *
+ * Source : ARTCI, reprise par Orange CI et par bilan.gouv.ci — « pour les
+ * numéros fixes, ajouter 27 devant les anciens numéros Orange, 25 devant les
+ * anciens MTN, 21 devant ceux de Moov ».
+ *
+ * Vérifié sur le terrain : l'hôtel Cannelle de San-Pédro est listé tantôt
+ * 34 71 05 39, tantôt +225 27 34 71 16 15 — même tranche 3471, avec et sans
+ * le 27.
+ */
+export const LEGACY_LANDLINE_RANGES = [
+  '20', '21', '22', '23', '24', '25',          // Abidjan
+  '30', '31', '32', '33', '34', '35', '36',    // intérieur
+];
+
 /** Conservé pour compatibilité : la liste publiée par MTN. */
 export const LEGACY_PREFIXES_MTN = LEGACY_PREFIXES.mtn;
 

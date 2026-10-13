@@ -114,3 +114,16 @@ test('une tranche hors plan reste refusée plutôt que devinée', () => {
   assert.equal(r.valid, false);
   assert.match(r.reason, /aucun opérateur connu/);
 });
+
+// Le motif d'un refus finit sous les yeux de quelqu'un : une élision sans
+// apostrophe (« n est », « l opérateur ») s'y lit comme une faute de frappe.
+test('les motifs de refus gardent leurs apostrophes', () => {
+  const refused = ['', 'abc', '57223637', '12345', '9912345678', '+33612345678'];
+  const missingApostrophe = /(^|[\s«(])(l|d|n|qu|s|j|c) [aeiouyhéèêàâîôû]/i;
+  for (const input of refused) {
+    const r = parse(input);
+    assert.equal(r.valid, false, input);
+    assert.ok(r.reason, `motif absent pour « ${input} »`);
+    assert.doesNotMatch(r.reason, missingApostrophe, `« ${input} » → ${r.reason}`);
+  }
+});

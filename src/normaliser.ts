@@ -67,9 +67,9 @@ export function parse(
 
   // ancien format : 8 chiffres, sans préfixe opérateur
   if (n.length === LENGTH_LEGACY) {
-    // Les deux premiers chiffres de l ancien numéro portent l opérateur
+    // Les deux premiers chiffres de l'ancien numéro portent l'opérateur
     // (01-03 Moov, 04-06 MTN, 07-09 Orange, plus les tranches MTN en 4x-9x).
-    // On peut donc convertir sans que l appelant ait à le préciser.
+    // On peut donc convertir sans que l'appelant ait à le préciser.
     // Un fixe d'avant 2021 (20-25 Abidjan, 30-36 intérieur) était forcément
     // Côte d'Ivoire Télécom, devenu Orange : il prend « 27 ». On le traite avant
     // les mobiles, car la tranche « 21 » existe des deux côtés du plan.
@@ -90,9 +90,9 @@ export function parse(
         ...empty,
         matchKey: n,
         legacyFormat: true,
-        reason: "ancien format à 8 chiffres, et la tranche « " + n.slice(0, 2) +
-          " » n est attribuée à aucun opérateur connu. Passez l opérateur en " +
-          "second argument pour convertir malgré tout.",
+        reason: `ancien format à 8 chiffres, et la tranche « ${n.slice(0, 2)} » n'est ` +
+          "attribuée à aucun opérateur connu. Passez l'opérateur en second argument " +
+          'pour convertir malgré tout.',
       };
     }
     const prefixe = Object.entries(PREFIXES)

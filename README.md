@@ -134,7 +134,7 @@ utile qu'on puisse faire ici.
 npm test
 ```
 
-22 tests, aucune dépendance.
+28 tests, aucune dépendance.
 
 ## In English
 
